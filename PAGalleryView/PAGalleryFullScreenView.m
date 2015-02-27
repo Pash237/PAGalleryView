@@ -20,6 +20,7 @@
 @property (nonatomic) NSMutableArray *imageViews;
 @property (nonatomic) CGRect parkingFrame;
 @property (nonatomic) BOOL statusBarWasHidden;
+@property (nonatomic) UIDeviceOrientation orientation;
 
 @end
 
@@ -38,7 +39,7 @@
 	galleryView.darkness.alpha = 0;
 
 	//hack to fix scroll view content offset animation issue
-	galleryView.scrollView.contentSize = CGSizeMake(galleryView.frame.size.width * images.count + root.frame.size.width * 2, galleryView.frame.size.height);
+	[galleryView expandScrollViewContentSizeToMaximum];
 
 	galleryView.statusBarWasHidden = [UIApplication sharedApplication].isStatusBarHidden;
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
@@ -68,14 +69,15 @@
 		self.darkness.backgroundColor = [UIColor blackColor];
 		[self insertSubview:self.darkness atIndex:0];
 
-		self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
 		UIPanGestureRecognizer *hideGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanToHide:)];
 		hideGestureRecognizer.delegate = self;
 		[self.scrollView addGestureRecognizer:hideGestureRecognizer];
 
 		UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSingleTap:)];
 		[self addGestureRecognizer:tapGestureRecognizer];
+
+		[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:) name:UIDeviceOrientationDidChangeNotification object:nil];
 	}
 
 	return self;
@@ -123,6 +125,10 @@
 
 	CGFloat width = self.frame.size.width;
 	CGFloat height = self.frame.size.height;
+	if (self.orientation == UIDeviceOrientationLandscapeRight || self.orientation == UIDeviceOrientationLandscapeLeft) {
+		width = self.frame.size.height;
+		height = self.frame.size.width;
+	}
 
 	for (NSUInteger i=0; i<self.scrollViews.count; i++) {
 		UIScrollView *zoomScrollView = self.scrollViews[i];
@@ -133,6 +139,12 @@
 	self.scrollView.contentSize = CGSizeMake(width * self.scrollViews.count, height);
 }
 
+- (void)expandScrollViewContentSizeToMaximum
+{
+	CGFloat width = self.superview.frame.size.width;
+	CGFloat height = self.superview.frame.size.height;
+	self.scrollView.contentSize = CGSizeMake(width * self.imageViews.count + width * 2, height);
+}
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
@@ -146,20 +158,27 @@
 - (void)didPanToHide:(UIPanGestureRecognizer *)recognizer
 {
 	CGFloat threshold = 100;
-	CGFloat y = [recognizer translationInView:nil].y;
+
+	CGFloat shift = [recognizer translationInView:nil].y;
+	if (self.orientation == UIDeviceOrientationLandscapeRight)
+		shift = [recognizer translationInView:nil].x;
+	if (self.orientation == UIDeviceOrientationLandscapeLeft)
+		shift = -[recognizer translationInView:nil].x;
+	if (self.orientation == UIDeviceOrientationPortraitUpsideDown)
+		shift = -[recognizer translationInView:nil].y;
 
 	if (recognizer.state == UIGestureRecognizerStateChanged) {
 		self.scrollView.frame = CGRectMake(
 				self.scrollView.frame.origin.x,
-				y,
+				shift,
 				self.scrollView.frame.size.width,
 				self.scrollView.frame.size.height);
 
-		self.darkness.alpha = 1.0f - MIN(0.5f, 0.2f * fabsf(y)/threshold);
+		self.darkness.alpha = 1.0f - MIN(0.5f, 0.2f * fabsf(shift)/threshold);
 	}
 
 	if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled || recognizer.state == UIGestureRecognizerStateFailed) {
-		if (fabsf(y) > threshold) {
+		if (fabsf(shift) > threshold) {
 			[self hideAnimated:YES];
 		} else {
 			[UIView animateWithDuration:0.3 animations:^{
@@ -174,8 +193,12 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)panGestureRecognizer
 {
-	CGPoint velocity = [(UIPanGestureRecognizer *)panGestureRecognizer velocityInView:panGestureRecognizer.view];
-	return fabs(velocity.y) > fabs(velocity.x);
+	if ([panGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+		CGPoint velocity = [(UIPanGestureRecognizer *)panGestureRecognizer velocityInView:panGestureRecognizer.view];
+		return fabs(velocity.y) > fabs(velocity.x);
+	} else {
+		return YES;
+	}
 }
 
 - (void)didSingleTap:(UITapGestureRecognizer *)recognizer
@@ -206,11 +229,52 @@
 		[UIView animateWithDuration:0.3 animations:^{
 		    self.frame = self.parkingFrame;
 		    self.darkness.alpha = 0;
+		    self.transform = CGAffineTransformMakeRotation(0);
 		    [self layoutIfNeeded];
 		} completion:^(BOOL completed) {
 		    [self removeFromSuperview];
 		}];
 	}
 }
+
+#pragma mark Rotation
+
+- (void)didChangeOrientation:(NSNotification *)notification
+{
+	//hack to fix scroll view content offset animation issue
+	[self expandScrollViewContentSizeToMaximum];
+
+	[UIView animateWithDuration:0.3 animations:^{
+		switch ([UIDevice currentDevice].orientation) {
+			case UIDeviceOrientationPortrait:
+				self.transform = CGAffineTransformMakeRotation(0);
+				self.orientation = [UIDevice currentDevice].orientation;
+				break;
+			case UIDeviceOrientationPortraitUpsideDown:
+				self.transform = CGAffineTransformMakeRotation(M_PI);
+		        self.orientation = [UIDevice currentDevice].orientation;
+				break;
+			case UIDeviceOrientationLandscapeLeft:
+				self.transform = CGAffineTransformMakeRotation(M_PI/2);
+		        self.orientation = [UIDevice currentDevice].orientation;
+				break;
+			case UIDeviceOrientationLandscapeRight:
+				self.transform = CGAffineTransformMakeRotation(-M_PI/2);
+		        self.orientation = [UIDevice currentDevice].orientation;
+				break;
+			default:
+				break;
+		}
+
+		self.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
+	}];
+}
+
+- (void)dealloc
+{
+	[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 @end
