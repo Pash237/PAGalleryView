@@ -17,26 +17,42 @@
 
 - (void)didShowPageWithIndex:(NSUInteger)index;
 - (void)didHidePageWithIndex:(NSUInteger)index;
+- (void)commonGalleryInit;
 
 @end
 
 @implementation PAGalleryView
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+	self = [super initWithCoder:coder];
+	if (self) {
+		[self commonGalleryInit];
+	}
+
+	return self;
+}
 
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-		self.scrollView.pagingEnabled = YES;
-		self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		self.scrollView.showsHorizontalScrollIndicator = NO;
-		self.scrollView.showsVerticalScrollIndicator = NO;
-		self.scrollView.delegate = self;
-		[self addSubview:self.scrollView];
+		[self commonGalleryInit];
 	}
 
 	return self;
+}
+
+- (void)commonGalleryInit
+{
+	self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+	self.scrollView.pagingEnabled = YES;
+	self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	self.scrollView.showsHorizontalScrollIndicator = NO;
+	self.scrollView.showsVerticalScrollIndicator = NO;
+	self.scrollView.delegate = self;
+	[self addSubview:self.scrollView];
 }
 
 - (void)setFrame:(CGRect)frame

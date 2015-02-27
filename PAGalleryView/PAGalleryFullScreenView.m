@@ -9,6 +9,7 @@
 - (void)setupViewsForImageCount:(NSUInteger)imageCount;
 - (void)didShowPageWithIndex:(NSUInteger)index;
 - (void)didHidePageWithIndex:(NSUInteger)index;
+- (void)commonGalleryInit;
 @end
 
 
@@ -52,28 +53,25 @@
 	return galleryView;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (void)commonGalleryInit
 {
-	self = [super initWithFrame:frame];
-	if (self) {
-		self.parkingFrame = frame;
+	[super commonGalleryInit];
 
-		self.darkness = [[UIView alloc] initWithFrame:CGRectMake(-10000, -10000, 20000, 20000)];
-		self.darkness.backgroundColor = [UIColor blackColor];
-		[self insertSubview:self.darkness atIndex:0];
+	self.parkingFrame = self.frame;
 
-		UIPanGestureRecognizer *hideGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanToHide:)];
-		hideGestureRecognizer.delegate = self;
-		[self.scrollView addGestureRecognizer:hideGestureRecognizer];
+	self.darkness = [[UIView alloc] initWithFrame:CGRectMake(-10000, -10000, 20000, 20000)];
+	self.darkness.backgroundColor = [UIColor blackColor];
+	[self insertSubview:self.darkness atIndex:0];
 
-		UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSingleTap:)];
-		[self addGestureRecognizer:tapGestureRecognizer];
+	UIPanGestureRecognizer *hideGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanToHide:)];
+	hideGestureRecognizer.delegate = self;
+	[self.scrollView addGestureRecognizer:hideGestureRecognizer];
 
-		[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:) name:UIDeviceOrientationDidChangeNotification object:nil];
-	}
+	UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSingleTap:)];
+	[self addGestureRecognizer:tapGestureRecognizer];
 
-	return self;
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientation:) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
 - (void)setupViewsForImageCount:(NSUInteger)imageCount
