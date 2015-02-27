@@ -20,18 +20,18 @@
     [super viewDidLoad];
 
 	NSArray *images = @[
-			[UIImage imageNamed:@"leaf_1.jpg"],
-			[UIImage imageNamed:@"leaf_2.jpg"],
-			[UIImage imageNamed:@"leaf_3.jpg"],
-			[UIImage imageNamed:@"leaf_4.jpg"],
-			[UIImage imageNamed:@"leaf_5.jpg"],
-			[UIImage imageNamed:@"leaf_6.jpg"]
+			[[NSBundle mainBundle] URLForResource:@"leaf_1" withExtension:@"jpg"],
+			[[NSBundle mainBundle] URLForResource:@"leaf_2" withExtension:@"jpg"],
+			[[NSBundle mainBundle] URLForResource:@"leaf_3" withExtension:@"jpg"],
+			[[NSBundle mainBundle] URLForResource:@"leaf_4" withExtension:@"jpg"],
+			[[NSBundle mainBundle] URLForResource:@"leaf_5" withExtension:@"jpg"],
+			[[NSBundle mainBundle] URLForResource:@"leaf_6" withExtension:@"jpg"],
 	];
 
 	self.view.backgroundColor = [UIColor lightGrayColor];
 
 	PAGalleryView *galleryView = [[PAGalleryView alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
-	galleryView.images = images;
+	galleryView.imageURLs = images;
 	[self.view addSubview:galleryView];
 }
 

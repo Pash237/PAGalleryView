@@ -26,7 +26,7 @@
 
 @implementation PAGalleryFullScreenView
 
-+ (PAGalleryFullScreenView *)displayFromImageView:(UIImageView *)imageView images:(NSArray *)images centerImageIndex:(NSUInteger)centerIndex;
++ (PAGalleryFullScreenView *)displayFromImageView:(UIImageView *)imageView imageURLs:(NSArray *)imageURLs centerImageIndex:(NSUInteger)centerIndex
 {
 	UIView *root = [UIApplication sharedApplication].windows[0];
 	CGRect rectInRoot = [imageView convertRect:imageView.bounds toView:root];
@@ -35,7 +35,7 @@
 	[root addSubview:galleryView];
 
 	galleryView.currentIndex = centerIndex;
-	galleryView.images = images;
+	galleryView.imageURLs = imageURLs;
 	galleryView.darkness.alpha = 0;
 
 	//hack to fix scroll view content offset animation issue
@@ -49,13 +49,6 @@
 	    galleryView.frame = root.bounds;
 	}];
 
-	return galleryView;
-}
-
-+ (PAGalleryFullScreenView *)displayFromImageView:(UIImageView *)imageView imageURLs:(NSArray *)imageURLs centerImageIndex:(NSUInteger)centerIndex
-{
-	PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView images:nil centerImageIndex:centerIndex];
-	galleryView.imageURLs = imageURLs;
 	return galleryView;
 }
 

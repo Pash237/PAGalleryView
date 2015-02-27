@@ -10,7 +10,6 @@
 
 @interface PAGalleryFullScreenView : PAGalleryView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
-+ (PAGalleryFullScreenView *)displayFromImageView:(UIImageView *)imageView images:(NSArray *)images centerImageIndex:(NSUInteger)centerIndex;
 + (PAGalleryFullScreenView *)displayFromImageView:(UIImageView *)imageView imageURLs:(NSArray *)imageURLs centerImageIndex:(NSUInteger)centerIndex;
 
 @end

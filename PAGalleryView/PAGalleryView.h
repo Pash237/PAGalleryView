@@ -17,7 +17,6 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic, weak) id<PAGalleryViewDelegate> delegate;
 
-@property (nonatomic) NSArray *images;
 @property (nonatomic) NSArray *imageURLs;
 
 - (UIImageView *)imageViewAtIndex:(NSUInteger)index;

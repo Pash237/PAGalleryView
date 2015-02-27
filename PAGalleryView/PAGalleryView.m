@@ -5,6 +5,7 @@
 
 #import "PAGalleryView.h"
 #import "PAGalleryFullScreenView.h"
+#import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 
 @interface PAGalleryView ()
 
@@ -71,13 +72,6 @@
 		imageView.userInteractionEnabled = YES;
 		[imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didSingleTap:)]];
 	}
-}
-
-- (void)setImages:(NSArray *)images
-{
-	_images = images;
-	[self setupViewsForImageCount:images.count];
-	[self reloadImages];
 }
 
 - (void)setImageURLs:(NSArray *)imageURLs
@@ -167,12 +161,8 @@
 
 - (void)didShowPageWithIndex:(NSUInteger)index
 {
-	if (self.images[index]) {
-		[self imageViewAtIndex:index].image = self.images[index];
-	} else if (self.imageURLs[index]) {
-		//TODO: загружать асинхронно из интернета с лоадером
-		[self imageViewAtIndex:index].image = [UIImage imageWithContentsOfFile:self.imageURLs[index]];
-	}
+	NSURL *url = self.imageURLs[index];
+	[[self imageViewAtIndex:index] setImageWithURL:url usingActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
 }
 
 - (void)didHidePageWithIndex:(NSUInteger)index
@@ -183,7 +173,7 @@
 - (void)didSingleTap:(UITapGestureRecognizer *)recognizer
 {
 	UIImageView *imageView = (UIImageView *)recognizer.view;
-	PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView images:self.images centerImageIndex:(NSUInteger)imageView.tag];
+	PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:self.imageURLs centerImageIndex:(NSUInteger)imageView.tag];
 	galleryView.delegate = self;
 }
 
