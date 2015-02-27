@@ -218,9 +218,10 @@
 			[zoomScrollView setZoomScale:1 animated:YES];
 		}
 		[UIView animateWithDuration:0.3 animations:^{
-		    self.frame = self.parkingFrame;
 		    self.darkness.alpha = 0;
 		    self.transform = CGAffineTransformMakeRotation(0);
+		    self.orientation = UIDeviceOrientationPortrait;
+		    self.frame = self.parkingFrame;
 		    [self layoutIfNeeded];
 		} completion:^(BOOL completed) {
 		    [self removeFromSuperview];
@@ -257,6 +258,8 @@
 
 		    self.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
 		    self.orientation = [UIDevice currentDevice].orientation;
+		} completion:^(BOOL completed) {
+			[self setNeedsLayout];
 		}];
 	}
 }
