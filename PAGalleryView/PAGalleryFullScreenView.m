@@ -143,7 +143,7 @@
 {
 	CGFloat width = self.superview.frame.size.width;
 	CGFloat height = self.superview.frame.size.height;
-	self.scrollView.contentSize = CGSizeMake(width * self.imageViews.count + width * 2, height);
+	self.scrollView.contentSize = CGSizeMake(width * self.imageViews.count + width * 10, height);
 }
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
@@ -241,33 +241,33 @@
 
 - (void)didChangeOrientation:(NSNotification *)notification
 {
-	//hack to fix scroll view content offset animation issue
-	[self expandScrollViewContentSizeToMaximum];
+	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+	if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown || orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+		//hack to fix scroll view content offset animation issue
+		[self expandScrollViewContentSizeToMaximum];
 
-	[UIView animateWithDuration:0.3 animations:^{
-		switch ([UIDevice currentDevice].orientation) {
-			case UIDeviceOrientationPortrait:
-				self.transform = CGAffineTransformMakeRotation(0);
-				self.orientation = [UIDevice currentDevice].orientation;
-				break;
-			case UIDeviceOrientationPortraitUpsideDown:
-				self.transform = CGAffineTransformMakeRotation(M_PI);
-		        self.orientation = [UIDevice currentDevice].orientation;
-				break;
-			case UIDeviceOrientationLandscapeLeft:
-				self.transform = CGAffineTransformMakeRotation(M_PI/2);
-		        self.orientation = [UIDevice currentDevice].orientation;
-				break;
-			case UIDeviceOrientationLandscapeRight:
-				self.transform = CGAffineTransformMakeRotation(-M_PI/2);
-		        self.orientation = [UIDevice currentDevice].orientation;
-				break;
-			default:
-				break;
-		}
+		[UIView animateWithDuration:0.3 animations:^{
+		    switch ([UIDevice currentDevice].orientation) {
+			    case UIDeviceOrientationPortrait:
+				    self.transform = CGAffineTransformMakeRotation(0);
+		            break;
+			    case UIDeviceOrientationPortraitUpsideDown:
+				    self.transform = CGAffineTransformMakeRotation(M_PI);
+		            break;
+			    case UIDeviceOrientationLandscapeLeft:
+				    self.transform = CGAffineTransformMakeRotation(M_PI / 2);
+		            break;
+			    case UIDeviceOrientationLandscapeRight:
+				    self.transform = CGAffineTransformMakeRotation(-M_PI / 2);
+		            break;
+			    default:
+				    break;
+		    }
 
-		self.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
-	}];
+		    self.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
+		    self.orientation = [UIDevice currentDevice].orientation;
+		}];
+	}
 }
 
 - (void)dealloc
