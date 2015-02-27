@@ -214,9 +214,8 @@
 	if (!animated) {
 		[self removeFromSuperview];
 	} else {
-		for (UIScrollView *zoomScrollView in self.scrollViews) {
-			[zoomScrollView setZoomScale:1 animated:YES];
-		}
+		[self resetZoomScale];
+
 		[UIView animateWithDuration:0.3 animations:^{
 		    self.darkness.alpha = 0;
 		    self.transform = CGAffineTransformMakeRotation(0);
@@ -237,6 +236,8 @@
 	if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown || orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
 		//hack to fix scroll view content offset animation issue
 		[self expandScrollViewContentSizeToMaximum];
+
+		[self resetZoomScale];
 
 		[UIView animateWithDuration:0.3 animations:^{
 		    switch ([UIDevice currentDevice].orientation) {
@@ -260,7 +261,17 @@
 		    self.orientation = [UIDevice currentDevice].orientation;
 		} completion:^(BOOL completed) {
 			[self setNeedsLayout];
+		    [self resetZoomScale];  //once more
 		}];
+	}
+}
+
+- (void)resetZoomScale
+{
+	for (UIScrollView *zoomScrollView in self.scrollViews) {
+		if (zoomScrollView.zoomScale != 1) {
+			[zoomScrollView setZoomScale:1 animated:YES];
+		}
 	}
 }
 
