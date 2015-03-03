@@ -277,6 +277,9 @@
 
 - (void)dealloc
 {
+	for (UIScrollView *scrollView in self.scrollViews) {
+		scrollView.delegate = nil;
+	}
 	[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
