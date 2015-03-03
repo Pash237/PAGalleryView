@@ -6,6 +6,7 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import "PAGalleryView.h"
 #import "PAGalleryFullScreenView.h"
+#import "UIImageView+PAActivityIndicator.h"
 
 @interface PAGalleryView ()
 
@@ -179,12 +180,26 @@
 {
 	NSURL *url = self.imageURLs[index];
 	UIImageView *imageView = [self imageViewAtIndex:index];
-	[imageView setImageWithURL:url];
+
+	__weak PAGalleryView *weakSelf = self;
+
+	[imageView showActivityIndicator];
+	[imageView setImageWithURLRequest:[NSURLRequest requestWithURL:url] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+		UIImageView *theImageView = [weakSelf imageViewAtIndex:index];
+	    [theImageView hideActivityIndicator];
+	    theImageView.image = image;
+	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+	    UIImageView *theImageView = [weakSelf imageViewAtIndex:index];
+	    [theImageView hideActivityIndicator];
+	    theImageView.image = nil;
+	}];
 }
 
 - (void)didHidePageWithIndex:(NSUInteger)index
 {
-	[self imageViewAtIndex:index].image = nil;
+	UIImageView *imageView = [self imageViewAtIndex:index];
+	imageView.image = nil;
+	[imageView hideActivityIndicator];
 }
 
 - (void)didSingleTap:(UITapGestureRecognizer *)recognizer

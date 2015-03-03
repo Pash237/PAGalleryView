@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3BE2C6FDC6F8CF7CE34826E8 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76C154B33303FB092F3B01FC /* libPods.a */; };
+		C94F34893E845FB9D700E88E /* UIImageView+PAActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C94F31EF888858428198098F /* UIImageView+PAActivityIndicator.m */; };
 		F7AC75991A9F82BA0046A6CF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AC75961A9F82BA0046A6CF /* AppDelegate.m */; };
 		F7AC759A1A9F82BA0046A6CF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AC75981A9F82BA0046A6CF /* ViewController.m */; };
 		F7AC759E1A9F82C60046A6CF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AC759C1A9F82C60046A6CF /* main.m */; };
@@ -27,6 +28,8 @@
 		4C98DCD6C00E2A4B6364049F /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		61945362C0641FB2FFB1827A /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		76C154B33303FB092F3B01FC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C94F31EF888858428198098F /* UIImageView+PAActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+PAActivityIndicator.m"; sourceTree = "<group>"; };
+		C94F3E1BBD3F23FDA38C0F8C /* UIImageView+PAActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+PAActivityIndicator.h"; sourceTree = "<group>"; };
 		F7AC75951A9F82BA0046A6CF /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = GalleryViewExample/AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		F7AC75961A9F82BA0046A6CF /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = GalleryViewExample/AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		F7AC75971A9F82BA0046A6CF /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = GalleryViewExample/ViewController.h; sourceTree = SOURCE_ROOT; };
@@ -97,6 +100,8 @@
 				F7AC75B01A9F83120046A6CF /* PAGalleryFullScreenView.m */,
 				F7AC75B11A9F83120046A6CF /* PAGalleryView.h */,
 				F7AC75B21A9F83120046A6CF /* PAGalleryView.m */,
+				C94F31EF888858428198098F /* UIImageView+PAActivityIndicator.m */,
+				C94F3E1BBD3F23FDA38C0F8C /* UIImageView+PAActivityIndicator.h */,
 			);
 			name = PAGalleryView;
 			path = ../PAGalleryView;
@@ -262,6 +267,7 @@
 				F7AC75B41A9F83120046A6CF /* PAGalleryView.m in Sources */,
 				F7AC75991A9F82BA0046A6CF /* AppDelegate.m in Sources */,
 				F7AC75B31A9F83120046A6CF /* PAGalleryFullScreenView.m in Sources */,
+				C94F34893E845FB9D700E88E /* UIImageView+PAActivityIndicator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
