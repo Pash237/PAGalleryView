@@ -3,9 +3,9 @@
 // Copyright (c) 2015 Pavel Alexeev. All rights reserved.
 //
 
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import "PAGalleryView.h"
 #import "PAGalleryFullScreenView.h"
-#import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 
 @interface PAGalleryView ()
 
@@ -178,7 +178,8 @@
 - (void)didShowPageWithIndex:(NSUInteger)index
 {
 	NSURL *url = self.imageURLs[index];
-	[[self imageViewAtIndex:index] setImageWithURL:url usingActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+	UIImageView *imageView = [self imageViewAtIndex:index];
+	[imageView setImageWithURL:url];
 }
 
 - (void)didHidePageWithIndex:(NSUInteger)index
