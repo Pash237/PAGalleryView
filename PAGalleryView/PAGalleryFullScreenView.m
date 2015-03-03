@@ -233,6 +233,10 @@
 - (void)didChangeOrientation:(NSNotification *)notification
 {
 	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+	if (self.orientation == orientation) {
+		//nothing changed
+		return;
+	}
 	if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown || orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
 		//hack to fix scroll view content offset animation issue
 		[self expandScrollViewContentSizeToMaximum];
