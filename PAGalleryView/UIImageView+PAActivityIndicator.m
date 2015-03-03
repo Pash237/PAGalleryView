@@ -59,7 +59,17 @@ static NSInteger ActivityIndicatorTag = 323115;
 		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:self.activityIndicatorStyle];
 		activityIndicator.tag = ActivityIndicatorTag;
 		activityIndicator.autoresizingMask = UIViewAutoresizingNone;
-		[activityIndicator startAnimating];
+
+		//delay loader to avoid blinking
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+			if (self.activityIndicatorCount > 0) {
+				activityIndicator.alpha = 0;
+				[activityIndicator startAnimating];
+				[UIView animateWithDuration:0.5 animations:^{
+				    activityIndicator.alpha = 1;
+				}];
+			}
+		});
 
 		self.activityIndicator = activityIndicator;
 
