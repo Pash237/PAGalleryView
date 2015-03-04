@@ -16,6 +16,8 @@
 @interface PAGalleryFullScreenView ()
 
 @property (nonatomic) UIView *darkness;
+@property (nonatomic) UIImageView *sourceImageView;
+@property (nonatomic) NSUInteger sourceImageViewIndex;
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) NSMutableArray *scrollViews;
 @property (nonatomic) NSMutableArray *imageViews;
@@ -35,6 +37,8 @@
 	PAGalleryFullScreenView *galleryView = [[PAGalleryFullScreenView alloc] initWithFrame:rectInRoot];
 	[root addSubview:galleryView];
 
+	galleryView.sourceImageView = imageView;
+	galleryView.sourceImageViewIndex = centerIndex;
 	galleryView.currentIndex = centerIndex;
 	galleryView.imageURLs = imageURLs;
 	galleryView.darkness.alpha = 0;
@@ -197,9 +201,23 @@
 	[self hideAnimated:YES];
 }
 
+- (void)didShowPageWithIndex:(NSUInteger)index
+{
+	if (index == self.sourceImageViewIndex) {
+		UIImageView *imageView = [self imageViewAtIndex:index];
+		imageView.image = self.sourceImageView.image;
+	}
+
+	[super didShowPageWithIndex:index];
+}
+
+
 - (void)didHidePageWithIndex:(NSUInteger)index
 {
-	[super didHidePageWithIndex:index];
+	UIImageView *imageView = [self imageViewAtIndex:index];
+	if (imageView.image && imageView.image != self.sourceImageView.image) {
+		[super didHidePageWithIndex:index];
+	}
 
 	//reset zoom
 	((UIScrollView *)self.scrollViews[index]).zoomScale = 1;

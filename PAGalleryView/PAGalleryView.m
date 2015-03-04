@@ -184,7 +184,8 @@
 	__weak PAGalleryView *weakSelf = self;
 
 	[imageView showActivityIndicator];
-	[imageView setImageWithURLRequest:[NSURLRequest requestWithURL:url] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+	[imageView setImageWithURLRequest:[NSURLRequest requestWithURL:url] placeholderImage:imageView.image success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+		//TODO: check if the image is still onscreen
 		UIImageView *theImageView = [weakSelf imageViewAtIndex:index];
 	    [theImageView hideActivityIndicator];
 	    theImageView.image = image;
@@ -198,8 +199,10 @@
 - (void)didHidePageWithIndex:(NSUInteger)index
 {
 	UIImageView *imageView = [self imageViewAtIndex:index];
-	imageView.image = nil;
-	[imageView hideActivityIndicator];
+	if (imageView.image) {
+		imageView.image = nil;
+		[imageView hideActivityIndicator];
+	}
 }
 
 - (void)didSingleTap:(UITapGestureRecognizer *)recognizer
