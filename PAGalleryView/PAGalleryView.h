@@ -18,6 +18,7 @@
 @property (nonatomic, weak) id<PAGalleryViewDelegate> delegate;
 
 @property (nonatomic) NSArray *imageURLs;
+@property (nonatomic) NSArray *fullScreenImageURLs;
 
 - (UIImageView *)imageViewAtIndex:(NSUInteger)index;
 

@@ -205,7 +205,13 @@
 - (void)didSingleTap:(UITapGestureRecognizer *)recognizer
 {
 	UIImageView *imageView = (UIImageView *)recognizer.view;
-	PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:self.imageURLs centerImageIndex:(NSUInteger)imageView.tag];
+
+	NSArray *imageURLs = self.imageURLs;
+	if (self.fullScreenImageURLs) {
+		imageURLs = self.fullScreenImageURLs;
+	}
+
+	PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:imageURLs centerImageIndex:(NSUInteger)imageView.tag];
 	galleryView.delegate = self;
 }
 
