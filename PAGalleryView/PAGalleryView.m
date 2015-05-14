@@ -57,6 +57,25 @@
 	[self addSubview:self.scrollView];
 }
 
+- (void)layoutSubviews
+{
+	[super layoutSubviews];
+
+	if (![self isMemberOfClass:[PAGalleryFullScreenView class]]) {
+		CGFloat width = self.frame.size.width;
+		CGFloat height = self.frame.size.height;
+
+		for (NSUInteger i = 0; i < self.imageViews.count; i++) {
+			UIImageView *imageView = self.imageViews[i];
+			imageView.frame = CGRectMake(width * i, 0, width, height);
+		}
+
+		self.scrollView.contentOffset = CGPointMake(width * self.currentIndex, 0);
+		self.scrollView.contentSize = CGSizeMake(width * self.imageViews.count, height);
+	}
+}
+
+
 - (void)setFrame:(CGRect)frame
 {
 	self.scrollView.delegate = nil;
@@ -79,9 +98,8 @@
 
 	self.scrollView.contentSize = CGSizeMake(width * imageCount, height);
 
-	for (int i=0; i<imageCount; i++) {
+	for (NSUInteger i=0; i<imageCount; i++) {
 		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(width * i, 0, width, height)];
-		imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		imageView.contentMode = UIViewContentModeScaleAspectFit;
 		imageView.tag = i;
 		[self.imageViews addObject:imageView];
