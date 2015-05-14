@@ -102,6 +102,7 @@
 		scrollView.delegate = self;
 		scrollView.showsHorizontalScrollIndicator = NO;
 		scrollView.showsVerticalScrollIndicator = NO;
+		scrollView.scrollsToTop = NO;
 		[self.scrollViews addObject:scrollView];
 		[self.scrollView addSubview:scrollView];
 
