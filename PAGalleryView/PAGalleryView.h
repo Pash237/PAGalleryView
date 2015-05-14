@@ -9,6 +9,7 @@
 
 @protocol PAGalleryViewDelegate <NSObject>
 @optional
+- (BOOL)galleryView:(PAGalleryView *)galleryView didSelectImage:(NSUInteger)index;
 - (void)galleryView:(PAGalleryView *)galleryView didChangeImage:(NSUInteger)index;
 @end
 

@@ -227,19 +227,36 @@
 - (void)didSingleTap:(UITapGestureRecognizer *)recognizer
 {
 	UIImageView *imageView = (UIImageView *)recognizer.view;
+	NSUInteger imageIndex = (NSUInteger)imageView.tag;
 
-	NSArray *imageURLs = self.imageURLs;
-	if (self.fullScreenImageURLs) {
-		imageURLs = self.fullScreenImageURLs;
+	BOOL shouldOpenFullScreenView = YES;    //by default
+	if ([self.delegate respondsToSelector:@selector(galleryView:didSelectImage:)]) {
+		shouldOpenFullScreenView = [self.delegate galleryView:self didSelectImage:imageIndex];
 	}
 
-	PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:imageURLs centerImageIndex:(NSUInteger)imageView.tag];
-	galleryView.delegate = self;
+	if (imageIndex >= self.fullScreenImageURLs.count) {
+		//for some reason full screen images are less than normal images – don't popup fullscreen view
+		shouldOpenFullScreenView = NO;
+	}
+
+	if (shouldOpenFullScreenView) {
+		NSArray *imageURLs = self.imageURLs;
+		if (self.fullScreenImageURLs) {
+			imageURLs = self.fullScreenImageURLs;
+		}
+
+		PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:imageURLs centerImageIndex:imageIndex];
+		galleryView.delegate = self;
+	}
 }
 
 - (void)galleryView:(PAGalleryView *)galleryView didChangeImage:(NSUInteger)index
 {
 	self.currentIndex = index;
+
+	if ([self.delegate respondsToSelector:@selector(galleryView:didChangeImage:)]) {
+		[self.delegate galleryView:self didChangeImage:_currentIndex];
+	}
 }
 
 
