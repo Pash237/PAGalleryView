@@ -170,11 +170,11 @@
 				self.scrollView.frame.size.width,
 				self.scrollView.frame.size.height);
 
-		self.darkness.alpha = 1.0f - MIN(0.5f, 0.2f * fabsf(shift)/threshold);
+		self.darkness.alpha = 1.0f - MIN(0.5f, 0.2f * (CGFloat)fabs(shift)/threshold);
 	}
 
 	if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled || recognizer.state == UIGestureRecognizerStateFailed) {
-		if (fabsf(shift) > threshold) {
+		if (fabs(shift) > threshold) {
 			[self hideAnimated:YES];
 		} else {
 			[UIView animateWithDuration:0.3 animations:^{
