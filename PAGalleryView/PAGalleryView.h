@@ -20,6 +20,7 @@
 
 @property (nonatomic) NSArray *imageURLs;
 @property (nonatomic) NSArray *fullScreenImageURLs;
+@property (nonatomic) UIImage *errorImage;
 
 - (UIImageView *)imageViewAtIndex:(NSUInteger)index;
 

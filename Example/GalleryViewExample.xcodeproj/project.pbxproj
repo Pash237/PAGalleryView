@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3BE2C6FDC6F8CF7CE34826E8 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76C154B33303FB092F3B01FC /* libPods.a */; };
+		C94F3372A4A676BCD5322EAE /* error_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C94F390B50825ADC1F26AE04 /* error_image@2x.png */; };
 		C94F34893E845FB9D700E88E /* UIImageView+PAActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C94F31EF888858428198098F /* UIImageView+PAActivityIndicator.m */; };
 		F7AC75991A9F82BA0046A6CF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AC75961A9F82BA0046A6CF /* AppDelegate.m */; };
 		F7AC759A1A9F82BA0046A6CF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7AC75981A9F82BA0046A6CF /* ViewController.m */; };
@@ -29,6 +30,7 @@
 		61945362C0641FB2FFB1827A /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		76C154B33303FB092F3B01FC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C94F31EF888858428198098F /* UIImageView+PAActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+PAActivityIndicator.m"; sourceTree = "<group>"; };
+		C94F390B50825ADC1F26AE04 /* error_image@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error_image@2x.png"; sourceTree = "<group>"; };
 		C94F3E1BBD3F23FDA38C0F8C /* UIImageView+PAActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+PAActivityIndicator.h"; sourceTree = "<group>"; };
 		F7AC75951A9F82BA0046A6CF /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = GalleryViewExample/AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		F7AC75961A9F82BA0046A6CF /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = GalleryViewExample/AppDelegate.m; sourceTree = SOURCE_ROOT; };
@@ -89,6 +91,7 @@
 				F7AC75A51A9F83090046A6CF /* leaf_4.jpg */,
 				F7AC75A61A9F83090046A6CF /* leaf_5.jpg */,
 				F7AC75A71A9F83090046A6CF /* leaf_6.jpg */,
+				C94F390B50825ADC1F26AE04 /* error_image@2x.png */,
 			);
 			path = Images;
 			sourceTree = SOURCE_ROOT;
@@ -219,6 +222,7 @@
 				F7AC75AC1A9F83090046A6CF /* leaf_5.jpg in Resources */,
 				F7AC75AD1A9F83090046A6CF /* leaf_6.jpg in Resources */,
 				F7AC75A01A9F82D60046A6CF /* Main.storyboard in Resources */,
+				C94F3372A4A676BCD5322EAE /* error_image@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

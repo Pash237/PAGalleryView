@@ -32,6 +32,7 @@
 
 	PAGalleryView *galleryView = [[PAGalleryView alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
 	galleryView.imageURLs = images;
+	galleryView.errorImage = [UIImage imageNamed:@"error_image.png"];
 	[self.view addSubview:galleryView];
 }
 

@@ -48,6 +48,11 @@ static NSInteger ActivityIndicatorTag = 323115;
 	objc_setAssociatedObject(self, &ActivityIndicatorCountKey, @(activityIndicatorCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (BOOL)isLoading
+{
+	return self.activityIndicatorCount > 0;
+}
+
 
 //-----------------------------------------------------------------
 

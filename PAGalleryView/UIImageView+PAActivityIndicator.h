@@ -8,6 +8,7 @@
 @interface UIImageView (PAActivityIndicator)
 
 @property (nonatomic) UIActivityIndicatorViewStyle activityIndicatorStyle;
+@property (nonatomic, readonly, getter=isLoading) BOOL loading;
 
 - (void)showActivityIndicator;
 - (void)hideActivityIndicator;

@@ -100,7 +100,6 @@
 
 	for (NSUInteger i=0; i<imageCount; i++) {
 		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(width * i, 0, width, height)];
-		imageView.contentMode = UIViewContentModeScaleAspectFit;
 		imageView.tag = i;
 		[self.imageViews addObject:imageView];
 		[self.scrollView addSubview:imageView];
@@ -207,11 +206,13 @@
 		//TODO: check if the image is still onscreen
 		UIImageView *theImageView = [weakSelf imageViewAtIndex:index];
 	    [theImageView hideActivityIndicator];
+		theImageView.contentMode = UIViewContentModeScaleAspectFit;
 	    theImageView.image = image;
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 	    UIImageView *theImageView = [weakSelf imageViewAtIndex:index];
 	    [theImageView hideActivityIndicator];
-	    theImageView.image = nil;
+		theImageView.contentMode = UIViewContentModeCenter;
+	    theImageView.image = self.errorImage;
 	}];
 }
 
@@ -239,6 +240,11 @@
 		shouldOpenFullScreenView = NO;
 	}
 
+	if (imageView.image == self.errorImage && !imageView.isLoading) {
+		//image did not load – seems like it doesn't exists
+		shouldOpenFullScreenView = NO;
+	}
+
 	if (shouldOpenFullScreenView) {
 		NSArray *imageURLs = self.imageURLs;
 		if (self.fullScreenImageURLs) {
@@ -246,6 +252,7 @@
 		}
 
 		PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:imageURLs centerImageIndex:imageIndex];
+		galleryView.errorImage = self.errorImage;
 		galleryView.delegate = self;
 	}
 }
