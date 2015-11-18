@@ -16,6 +16,9 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+Minimum iOS Target – iOS 7.
+AFNetworking is used to download images.
+
 ## Installation
 
 PAGalleryView is available through [CocoaPods](http://cocoapods.org). To install
@@ -23,6 +26,28 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 pod "PAGalleryView"
+```
+
+##Usage
+
+Simple example:
+
+```objective-c
+	NSArray *images = @[
+			[[NSBundle mainBundle] URLForResource:@"image_1" withExtension:@"jpg"],
+			[[NSBundle mainBundle] URLForResource:@"image_2" withExtension:@"jpg"],
+			[[NSBundle mainBundle] URLForResource:@"image_3" withExtension:@"jpg"],
+	];
+
+	self.galleryView.imageURLs = images;
+```
+
+Using fullscreen images:
+
+```objective-c
+	self.galleryView.imageURLs = images;
+	self.galleryView.fullScreenImageURLs = fullScreenImages;
+	self.galleryView.errorImage = [UIImage imageNamed:@"errorImage"];
 ```
 
 ## Author
