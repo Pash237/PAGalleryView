@@ -11,7 +11,7 @@
 #import "UIImageView+AFNetworking.h"
 
 @interface ViewController ()
-
+@property (nonatomic, weak) IBOutlet PAGalleryView *galleryView;
 @end
 
 @implementation ViewController
@@ -44,13 +44,9 @@
 			[NSURL URLWithString:[NSString stringWithFormat:@"http://upload.wikimedia.org/wikipedia/commons/5/50/Bixby_Creek_Bridge_1932..jpg?%d", arc4random_uniform(10000)]]
 	];
 
-	self.view.backgroundColor = [UIColor lightGrayColor];
-
-	PAGalleryView *galleryView = [[PAGalleryView alloc] initWithFrame:CGRectMake(0, 100, 320, 200)];
-	galleryView.imageURLs = images;
-	galleryView.fullScreenImageURLs = fullScreenImages;
-	galleryView.errorImage = [UIImage imageNamed:@"error_image.png"];
-	[self.view addSubview:galleryView];
+	self.galleryView.imageURLs = images;
+	self.galleryView.fullScreenImageURLs = fullScreenImages;
+	self.galleryView.errorImage = [UIImage imageNamed:@"error_image.png"];
 }
 
 @end

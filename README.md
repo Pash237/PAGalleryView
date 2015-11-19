@@ -17,6 +17,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ## Requirements
 
 Minimum iOS Target – iOS 7.
+
 AFNetworking is used to download images.
 
 ## Installation
