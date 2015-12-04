@@ -92,6 +92,7 @@
 	CGFloat height = self.frame.size.height;
 
 	self.scrollView.contentSize = CGSizeMake(width * imageCount, height);
+	self.scrollView.alwaysBounceHorizontal = YES;
 
 	for (int i=0; i<imageCount; i++) {
 		UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(width * i, 0, width, height)];
