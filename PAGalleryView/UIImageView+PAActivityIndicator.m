@@ -8,7 +8,6 @@
 
 static char ActivityIndicatorStyleKey;
 static char ActivityIndicatorKey;
-static char ActivityIndicatorCountKey;
 static NSInteger ActivityIndicatorTag = 323115;
 
 @implementation UIImageView (PAActivityIndicator)
@@ -38,19 +37,9 @@ static NSInteger ActivityIndicatorTag = 323115;
 	objc_setAssociatedObject(self, &ActivityIndicatorKey, activityIndicator, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSInteger)activityIndicatorCount
-{
-	return [objc_getAssociatedObject(self, &ActivityIndicatorCountKey) integerValue];
-}
-
-- (void)setActivityIndicatorCount:(NSInteger)activityIndicatorCount
-{
-	objc_setAssociatedObject(self, &ActivityIndicatorCountKey, @(activityIndicatorCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (BOOL)isLoading
 {
-	return self.activityIndicatorCount > 0;
+	return self.activityIndicator != nil;
 }
 
 
@@ -58,43 +47,32 @@ static NSInteger ActivityIndicatorTag = 323115;
 
 - (void)showActivityIndicator
 {
-	self.activityIndicatorCount++;
-
 	if (!self.activityIndicator) {
-		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:self.activityIndicatorStyle];
-		activityIndicator.tag = ActivityIndicatorTag;
-		activityIndicator.autoresizingMask = UIViewAutoresizingNone;
+		self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:self.activityIndicatorStyle];
+		self.activityIndicator.tag = ActivityIndicatorTag;
+		self.activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 
 		//delay loader to avoid blinking
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-			if (self.activityIndicatorCount > 0) {
-				activityIndicator.alpha = 0;
-				[activityIndicator startAnimating];
-				[UIView animateWithDuration:0.5 animations:^{
-				    activityIndicator.alpha = 1;
-				}];
-			}
+			self.activityIndicator.alpha = 0;
+			[self.activityIndicator startAnimating];
+			[UIView animateWithDuration:0.5 animations:^{
+				self.activityIndicator.alpha = 1;
+			}];
 		});
-
-		self.activityIndicator = activityIndicator;
 
 		[self updateActivityIndicatorFrame];
 
-	    [self addSubview:activityIndicator];
+	    [self addSubview:self.activityIndicator];
 	}
 }
 
 - (void)hideActivityIndicator
 {
-	self.activityIndicatorCount--;
-
-	if (self.activityIndicatorCount <= 0) {
-	    if (self.activityIndicator) {
-		    [self.activityIndicator removeFromSuperview];
-		    self.activityIndicator = nil;
-	    }
-		self.activityIndicatorCount = 0;
-	}
+    if (self.activityIndicator) {
+	    [self.activityIndicator removeFromSuperview];
+	    self.activityIndicator = nil;
+    }
 }
 
 
