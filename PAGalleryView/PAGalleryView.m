@@ -86,6 +86,8 @@
 
 - (void)setupViewsForImageCount:(NSUInteger)imageCount
 {
+	//TODO: reuse views to perform faster on table view cells
+
 	//remove old views
 	for (UIView *imageView in self.imageViews) {
 		[imageView removeFromSuperview];
@@ -113,9 +115,12 @@
 {
 	_imageURLs = imageURLs;
 	[self setupViewsForImageCount:imageURLs.count];
-	[self reloadImages];
+	if (_currentIndex > imageURLs.count - 1) {
+		self.currentIndex = imageURLs.count - 1;
+	} else {
+		[self reloadImages];
+	}
 }
-
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex
 {
