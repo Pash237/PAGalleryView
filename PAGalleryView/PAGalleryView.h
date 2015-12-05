@@ -15,6 +15,8 @@
 
 @interface PAGalleryView : UIView <UIScrollViewDelegate, PAGalleryViewDelegate>
 
+@property (nonatomic, readonly) UIScrollView *scrollView;
+
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic, weak) id<PAGalleryViewDelegate> delegate;
 

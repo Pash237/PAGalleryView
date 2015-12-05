@@ -18,7 +18,6 @@
 @property (nonatomic) UIView *darkness;
 @property (nonatomic) UIImageView *sourceImageView;
 @property (nonatomic) NSUInteger sourceImageViewIndex;
-@property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) NSMutableArray *scrollViews;
 @property (nonatomic) NSMutableArray *imageViews;
 @property (nonatomic) CGRect parkingFrame;

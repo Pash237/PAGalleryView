@@ -10,7 +10,7 @@
 
 @interface PAGalleryView ()
 
-@property (nonatomic) UIScrollView *scrollView;
+@property (nonatomic, readwrite) UIScrollView *scrollView;
 @property (nonatomic) NSMutableArray *imageViews;
 
 @property (nonatomic) int previousImageOnLeft;
