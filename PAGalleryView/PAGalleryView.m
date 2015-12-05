@@ -124,8 +124,10 @@
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex
 {
-	[self setCenterIndex:currentIndex animated:NO];
-	[self reloadImages];
+	if (self.currentIndex != currentIndex) {
+		[self setCenterIndex:currentIndex animated:NO];
+		[self reloadImages];
+	}
 }
 
 - (void)setCenterIndex:(NSUInteger)centerIndex animated:(BOOL)animated
@@ -241,7 +243,7 @@
 	}
 
 	if (imageIndex >= self.fullScreenImageURLs.count) {
-		//for some reason full screen images are less than normal images – don't popup fullscreen view
+		//for some reason full screen image count are less than normal images – don't popup fullscreen view
 		shouldOpenFullScreenView = NO;
 	}
 
