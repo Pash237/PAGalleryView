@@ -264,6 +264,9 @@
 	}
 }
 
+/**
+ * fullscreen gallery delegate
+ */
 - (void)galleryView:(PAGalleryView *)galleryView didChangeImage:(NSUInteger)index
 {
 	self.currentIndex = index;

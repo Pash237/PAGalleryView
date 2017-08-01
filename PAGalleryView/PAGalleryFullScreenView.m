@@ -28,6 +28,8 @@
 
 @implementation PAGalleryFullScreenView
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 + (PAGalleryFullScreenView *)displayFromImageView:(UIImageView *)imageView imageURLs:(NSArray *)imageURLs centerImageIndex:(NSUInteger)centerIndex
 {
 	UIView *root = [UIApplication sharedApplication].windows[0];
@@ -56,6 +58,7 @@
 
 	return galleryView;
 }
+#pragma GCC diagnostic pop
 
 - (void)commonGalleryInit
 {
@@ -149,7 +152,7 @@
 		return nil;
 
 	NSInteger imageIndex = scrollView.tag;
-	return [self imageViewAtIndex:imageIndex];
+	return [self imageViewAtIndex:(NSUInteger)imageIndex];
 }
 
 - (void)didPanToHide:(UIPanGestureRecognizer *)recognizer
@@ -225,6 +228,8 @@
 	((UIScrollView *)self.scrollViews[index]).zoomScale = 1;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (void)hideAnimated:(BOOL)animated
 {
 	if (!self.statusBarWasHidden) {
@@ -247,6 +252,7 @@
 		}];
 	}
 }
+#pragma GCC diagnostic pop
 
 #pragma mark Rotation
 
@@ -299,13 +305,13 @@
 				    self.transform = CGAffineTransformMakeRotation(0);
 		            break;
 			    case UIDeviceOrientationPortraitUpsideDown:
-				    self.transform = CGAffineTransformMakeRotation(M_PI);
+				    self.transform = CGAffineTransformMakeRotation((CGFloat)M_PI);
 		            break;
 			    case UIDeviceOrientationLandscapeLeft:
-				    self.transform = CGAffineTransformMakeRotation(M_PI / 2);
+				    self.transform = CGAffineTransformMakeRotation((CGFloat)M_PI / 2);
 		            break;
 			    case UIDeviceOrientationLandscapeRight:
-				    self.transform = CGAffineTransformMakeRotation(-M_PI / 2);
+				    self.transform = CGAffineTransformMakeRotation((CGFloat)-M_PI / 2);
 		            break;
 			    default:
 				    break;
