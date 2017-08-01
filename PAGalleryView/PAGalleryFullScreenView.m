@@ -50,11 +50,16 @@
 
 	galleryView.statusBarWasHidden = [UIApplication sharedApplication].isStatusBarHidden;
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-
-	[UIView animateWithDuration:0.3 animations:^{
-	    galleryView.darkness.alpha = 1;
-	    galleryView.frame = root.bounds;
-	}];
+	
+	[UIView animateWithDuration:0.4
+	                      delay:0
+	     usingSpringWithDamping:1.0
+	      initialSpringVelocity:0
+	                    options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
+	                 animations:^{
+		                 galleryView.darkness.alpha = 1;
+		                 galleryView.frame = root.bounds;
+	                 } completion:NULL];
 
 	return galleryView;
 }
@@ -185,9 +190,15 @@
 			    self.darkness.alpha = 1;
 			}];
 		}
-		[UIView animateWithDuration:0.3 animations:^{
-		    self.scrollView.frame = self.bounds;
-		}];
+		[UIView animateWithDuration:0.4
+		                      delay:0
+		     usingSpringWithDamping:1.0
+		      initialSpringVelocity:0
+		                    options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
+		                 animations:^{
+			                 self.scrollView.frame = self.bounds;
+		                 }
+		                 completion:NULL];
 	}
 }
 
@@ -240,16 +251,22 @@
 		[self removeFromSuperview];
 	} else {
 		[self resetZoomScale];
-
-		[UIView animateWithDuration:0.3 animations:^{
-		    self.darkness.alpha = 0;
-		    self.transform = CGAffineTransformMakeRotation(0);
-		    self.orientation = UIDeviceOrientationPortrait;
-		    self.frame = self.parkingFrame;
-		    [self layoutIfNeeded];
-		} completion:^(BOOL completed) {
-		    [self removeFromSuperview];
-		}];
+		
+		[UIView animateWithDuration:0.4
+		                      delay:0
+		     usingSpringWithDamping:1.0
+		      initialSpringVelocity:0
+		                    options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
+		                 animations:^{
+			                 self.darkness.alpha = 0;
+			                 self.transform = CGAffineTransformMakeRotation(0);
+			                 self.orientation = UIDeviceOrientationPortrait;
+			                 self.frame = self.parkingFrame;
+			                 [self layoutIfNeeded];
+		                 }
+		                 completion:^(BOOL completed) {
+			                 [self removeFromSuperview];
+		                 }];
 	}
 }
 #pragma GCC diagnostic pop
