@@ -34,6 +34,7 @@
 	CGRect rectInRoot = [imageView convertRect:imageView.bounds toView:root];
 
 	PAGalleryFullScreenView *galleryView = [[PAGalleryFullScreenView alloc] initWithFrame:rectInRoot];
+    galleryView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[root addSubview:galleryView];
 
 	galleryView.sourceImageView = imageView;
@@ -249,6 +250,32 @@
 
 #pragma mark Rotation
 
+- (UIInterfaceOrientationMask)supportedDeviceOrientations
+{
+    UIInterfaceOrientationMask orientations = (UIInterfaceOrientationMask)0;
+    
+    NSArray *supportedOrientations = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"];
+    for (NSString *orientation in supportedOrientations) {
+        if ([orientation isEqualToString:@"UIInterfaceOrientationPortrait"])
+            orientations |= UIInterfaceOrientationMaskPortrait;
+        if ([orientation isEqualToString:@"UIInterfaceOrientationPortraitUpsideDown"])
+            orientations |= UIInterfaceOrientationMaskPortraitUpsideDown;
+        if ([orientation isEqualToString:@"UIInterfaceOrientationLandscapeLeft"])
+            orientations |= UIInterfaceOrientationMaskLandscapeLeft;
+        if ([orientation isEqualToString:@"UIInterfaceOrientationLandscapeRight"])
+            orientations |= UIInterfaceOrientationMaskLandscapeRight;
+    }
+    return orientations;
+}
+
+- (BOOL)needToAutorotate
+{
+    UIInterfaceOrientationMask supportedDeviceOrientations = self.supportedDeviceOrientations;
+    if ((supportedDeviceOrientations & UIInterfaceOrientationMaskPortrait) && (supportedDeviceOrientations & UIInterfaceOrientationMaskLandscapeLeft))
+        return NO;
+    return YES;
+}
+
 - (void)didChangeOrientation:(NSNotification *)notification
 {
 	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
@@ -256,6 +283,10 @@
 		//nothing changed
 		return;
 	}
+
+    if (!self.needToAutorotate)
+        return;
+    
 	if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown || orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
 		//hack to fix scroll view content offset animation issue
 		[self expandScrollViewContentSizeToMaximum];
