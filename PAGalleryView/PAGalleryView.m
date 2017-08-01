@@ -193,7 +193,7 @@
 	_currentIndex = centerIndex;
 
 	CGFloat width = self.scrollView.frame.size.width;
-	CGFloat height = self.scrollView.frame.size.height;
+
 	if (self.closeAlignment) {
 		CGRect rect = [self.imageViews[centerIndex] convertRect:self.imageViews[centerIndex].bounds toView:self.scrollView];
 		[self.scrollView scrollRectToVisible:rect animated:animated];
@@ -241,6 +241,7 @@
 				return i;
 			}
 		}
+		return 0;
 	} else {
 		return (NSInteger)((self.scrollView.contentOffset.x + x) / self.scrollView.frame.size.width);
 	}
