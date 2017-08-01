@@ -20,9 +20,12 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic, weak) id<PAGalleryViewDelegate> delegate;
 
-@property (nonatomic) NSArray *imageURLs;
-@property (nonatomic) NSArray *fullScreenImageURLs;
+@property (nonatomic) NSArray<NSURL *> *imageURLs;
+@property (nonatomic) NSArray<NSURL *> *fullScreenImageURLs;
 @property (nonatomic) UIImage *errorImage;
+
+@property (nonatomic) BOOL closeAlignment;
+@property (nonatomic) CGFloat imageSpacing;
 
 - (UIImageView *)imageViewAtIndex:(NSUInteger)index;
 

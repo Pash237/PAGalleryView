@@ -8,16 +8,21 @@
 #import "PAGalleryFullScreenView.h"
 #import "UIImageView+PAActivityIndicator.h"
 
+@interface PAGalleryFullScreenView ()
+@property (nonatomic) CGRect parkingFrame;
+@end
+
 @interface PAGalleryView ()
 
 @property (nonatomic, readwrite) UIScrollView *scrollView;
-@property (nonatomic) NSMutableArray *imageViews;
+@property (nonatomic) NSMutableArray<UIImageView *> *imageViews;
+@property (nonatomic, weak) PAGalleryFullScreenView *fullScreenGalleryView;
 
-@property (nonatomic) int previousImageOnLeft;
-@property (nonatomic) int previousImageOnRight;
+@property (nonatomic) NSMutableArray<NSNumber *> *visibleImages;
+@property (nonatomic) NSMutableArray<NSValue *> *imagesSize;
 
-- (void)didShowPageWithIndex:(NSUInteger)index;
-- (void)didHidePageWithIndex:(NSUInteger)index;
+- (void)didShowImageWithIndex:(NSUInteger)index;
+- (void)didHideImageWithIndex:(NSUInteger)index;
 - (void)commonGalleryInit;
 
 @end
@@ -64,17 +69,43 @@
 	if (![self isMemberOfClass:[PAGalleryFullScreenView class]]) {
 		CGFloat width = self.frame.size.width;
 		CGFloat height = self.frame.size.height;
+        CGFloat currentX = 0;
+        CGFloat currentImageX = 0;
 
 		for (NSUInteger i = 0; i < self.imageViews.count; i++) {
 			UIImageView *imageView = self.imageViews[i];
-			imageView.frame = CGRectMake(width * i, 0, width, height);
+            if (self.closeAlignment) {
+                CGSize imageSize = [self.imagesSize[i] CGSizeValue];
+                CGFloat imageWidth = height * imageSize.width/imageSize.height;
+                imageView.frame = CGRectMake(currentX, 0, imageWidth, height);
+	            if (i != self.imageViews.count - 1) {
+		            currentX += self.imageSpacing;
+	            }
+            } else {
+                imageView.frame = CGRectMake(width * i, 0, width, height);
+            }
+            if (i == self.currentIndex) {
+                currentImageX = currentX;
+            }
+            currentX += imageView.frame.size.width;
 		}
+        
+        CGFloat totalWidth = currentX;
 
-		self.scrollView.contentOffset = CGPointMake(width * self.currentIndex, 0);
-		self.scrollView.contentSize = CGSizeMake(width * self.imageViews.count, height);
+		if (!self.closeAlignment) {
+			self.scrollView.contentOffset = CGPointMake(currentImageX, 0);
+		}
+		self.scrollView.contentSize = CGSizeMake(totalWidth, height);
+		
+		[self loadImagesIfVisible];
 	}
 }
 
+- (void)setCloseAlignment:(BOOL)closeAlignment
+{
+    _closeAlignment = closeAlignment;
+    self.scrollView.pagingEnabled = !closeAlignment;
+}
 
 - (void)setFrame:(CGRect)frame
 {
@@ -97,11 +128,18 @@
 	CGFloat height = self.frame.size.height;
 
 	self.imageViews = [NSMutableArray arrayWithCapacity:imageCount];
+	self.imagesSize = [NSMutableArray arrayWithCapacity:imageCount];
 
 	self.scrollView.contentSize = CGSizeMake(width * imageCount, height);
+	
+	CGFloat emptyImageWidth = roundf(height*1.3333f);
 
 	for (NSUInteger i=0; i<imageCount; i++) {
-		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(width * i, 0, width, height)];
+		CGFloat imageViewWidth = self.closeAlignment ? emptyImageWidth : width;
+		
+		[self.imagesSize addObject:[NSValue valueWithCGSize:CGSizeMake(imageViewWidth, height)]];
+		
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(imageViewWidth * i, 0, imageViewWidth, height)];
 		imageView.tag = i;
 		[self.imageViews addObject:imageView];
 		[self.scrollView addSubview:imageView];
@@ -111,14 +149,34 @@
 	}
 }
 
+- (void)checkImagesVisibility
+{
+	CGFloat gap = self.closeAlignment ? 1 : self.imagesSize.firstObject.CGSizeValue.width * 0.2f;
+	
+	for (NSUInteger i=0; i<self.imageViews.count; i++) {
+		CGRect frame = [self.imageViews[i] convertRect:self.imageViews[i].bounds toView:self];
+		BOOL isVisible = (frame.origin.x <= self.scrollView.frame.size.width + gap &&
+				frame.origin.x + frame.size.width > -gap);
+		self.visibleImages[i] = @(isVisible);
+	}
+}
+
 - (void)setImageURLs:(NSArray *)imageURLs
 {
 	_imageURLs = imageURLs;
 	[self setupViewsForImageCount:imageURLs.count];
+	
+	if (self.visibleImages.count != self.imageURLs.count) {
+		self.visibleImages = [NSMutableArray arrayWithCapacity:self.imageURLs.count];
+		for (NSUInteger i=0; i<self.imageURLs.count; i++) {
+			[self.visibleImages addObject:@NO];
+		}
+	}
+	
 	if (_currentIndex > imageURLs.count - 1) {
 		self.currentIndex = imageURLs.count - 1;
 	} else {
-		[self reloadImages];
+		[self loadImagesIfVisible];
 	}
 }
 
@@ -126,7 +184,7 @@
 {
 	if (self.currentIndex != currentIndex) {
 		[self setCenterIndex:currentIndex animated:NO];
-		[self reloadImages];
+		[self loadImagesIfVisible];
 	}
 }
 
@@ -135,61 +193,68 @@
 	_currentIndex = centerIndex;
 
 	CGFloat width = self.scrollView.frame.size.width;
-	[self.scrollView setContentOffset:CGPointMake(width * centerIndex, 0) animated:animated];
+	CGFloat height = self.scrollView.frame.size.height;
+	if (self.closeAlignment) {
+		CGRect rect = [self.imageViews[centerIndex] convertRect:self.imageViews[centerIndex].bounds toView:self.scrollView];
+		[self.scrollView scrollRectToVisible:rect animated:animated];
+		self.fullScreenGalleryView.parkingFrame = [self.imageViews[centerIndex] convertRect:self.imageViews[centerIndex].bounds toView:self.fullScreenGalleryView.superview];
+	} else {
+		[self.scrollView setContentOffset:CGPointMake(width * centerIndex, 0) animated:animated];
+	}
 }
 
-- (void)reloadImages
+- (void)loadImagesIfVisible
 {
-	NSInteger centerImage = self.currentIndex;
-
-	for (NSInteger i=MAX(centerImage - 1, 0); i<=centerImage + 1 && i<self.imageViews.count; i++) {
-		[self didHidePageWithIndex:i];
-		[self didShowPageWithIndex:i];
+	NSArray *previouslyVisibleImages = [[NSArray alloc] initWithArray:self.visibleImages copyItems:YES];
+	[self checkImagesVisibility];
+	
+	for (NSUInteger i=0; i<self.imageViews.count; i++) {
+		BOOL isVisible = [self.visibleImages[i] boolValue];
+		BOOL wasVisible = [previouslyVisibleImages[i] boolValue];
+		
+		if (isVisible && !wasVisible) {
+			[self didShowImageWithIndex:i];
+		}
+		if (!isVisible && wasVisible) {
+			[self didHideImageWithIndex:i];
+		}
 	}
 }
 
 - (UIImageView *)imageViewAtIndex:(NSUInteger)index
 {
-	return self.imageViews[index];
+	if (index < self.imageViews.count) {
+		return self.imageViews[index];
+	} else {
+		return nil;
+	}
 }
 
+- (NSInteger)imageAtX:(CGFloat)x
+{
+	if (self.closeAlignment) {
+		CGFloat currentX = 0;
+		
+		for (NSUInteger i = 0; i < self.imageViews.count; i++) {
+			currentX += self.imageViews[i].frame.size.width + self.imageSpacing;
+			if (currentX > self.scrollView.contentOffset.x + x) {
+				return i;
+			}
+		}
+	} else {
+		return (NSInteger)((self.scrollView.contentOffset.x + x) / self.scrollView.frame.size.width);
+	}
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 	if (scrollView != self.scrollView)
 		return;
-
-	CGFloat width = scrollView.frame.size.width;
-	CGFloat gap = width * 0.2f;
-	int imageOnLeft = (int)((scrollView.contentOffset.x - gap) / width);
-	int imageOnRight = (int)((scrollView.contentOffset.x + width + gap) / width);
-
-	if (imageOnLeft > _previousImageOnLeft) {
-		if (_previousImageOnLeft >= 0 && _previousImageOnLeft < self.imageViews.count) {
-			[self didHidePageWithIndex:(NSUInteger)_previousImageOnLeft];
-		}
-	}
-	if (imageOnRight < _previousImageOnRight) {
-		if (_previousImageOnRight >= 0 && _previousImageOnRight < self.imageViews.count) {
-			[self didHidePageWithIndex:(NSUInteger)_previousImageOnRight];
-		}
-	}
-	if (imageOnLeft < _previousImageOnLeft) {
-		if (imageOnLeft >= 0 && imageOnLeft < self.imageViews.count) {
-			[self didShowPageWithIndex:(NSUInteger)imageOnLeft];
-		}
-	}
-	if (imageOnRight > _previousImageOnRight) {
-		if (imageOnRight >= 0 && imageOnRight < self.imageViews.count) {
-			[self didShowPageWithIndex:(NSUInteger)imageOnRight];
-		}
-	}
-
-	self.previousImageOnLeft = imageOnLeft;
-	self.previousImageOnRight = imageOnRight;
+	
+	[self loadImagesIfVisible];
 
 	//get center image index
-	NSInteger index = (NSInteger)((self.scrollView.contentOffset.x + width/2) / width);
+	NSInteger index = [self imageAtX:5];
 	if (index < 0) index = 0;
 	if (index > self.imageViews.count - 1) index = self.imageViews.count - 1;
 	if (_currentIndex != index) {
@@ -201,7 +266,7 @@
 	}
 }
 
-- (void)didShowPageWithIndex:(NSUInteger)index
+- (void)didShowImageWithIndex:(NSUInteger)index
 {
 	NSURL *url = self.imageURLs[index];
 	UIImageView *imageView = [self imageViewAtIndex:index];
@@ -215,15 +280,21 @@
 	    [theImageView hideActivityIndicator];
 		theImageView.contentMode = UIViewContentModeScaleAspectFit;
 	    theImageView.image = image;
+		
+		weakSelf.imagesSize[index] = [NSValue valueWithCGSize:image.size];
+        
+        if (weakSelf.closeAlignment) {
+            [weakSelf setNeedsLayout];
+        }
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 	    UIImageView *theImageView = [weakSelf imageViewAtIndex:index];
 	    [theImageView hideActivityIndicator];
 		theImageView.contentMode = UIViewContentModeCenter;
-	    theImageView.image = self.errorImage;
+	    theImageView.image = weakSelf.errorImage;
 	}];
 }
 
-- (void)didHidePageWithIndex:(NSUInteger)index
+- (void)didHideImageWithIndex:(NSUInteger)index
 {
 	UIImageView *imageView = [self imageViewAtIndex:index];
 	if (imageView.image) {
@@ -258,9 +329,9 @@
 			imageURLs = self.fullScreenImageURLs;
 		}
 
-		PAGalleryFullScreenView *galleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:imageURLs centerImageIndex:imageIndex];
-		galleryView.errorImage = self.errorImage;
-		galleryView.delegate = self;
+		self.fullScreenGalleryView = [PAGalleryFullScreenView displayFromImageView:imageView imageURLs:imageURLs centerImageIndex:imageIndex];
+		self.fullScreenGalleryView.errorImage = self.errorImage;
+		self.fullScreenGalleryView.delegate = self;
 	}
 }
 

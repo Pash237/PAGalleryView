@@ -7,8 +7,8 @@
 
 @interface PAGalleryView ()
 - (void)setupViewsForImageCount:(NSUInteger)imageCount;
-- (void)didShowPageWithIndex:(NSUInteger)index;
-- (void)didHidePageWithIndex:(NSUInteger)index;
+- (void)didShowImageWithIndex:(NSUInteger)index;
+- (void)didHideImageWithIndex:(NSUInteger)index;
 - (void)commonGalleryInit;
 @end
 
@@ -206,22 +206,22 @@
 	[self hideAnimated:YES];
 }
 
-- (void)didShowPageWithIndex:(NSUInteger)index
+- (void)didShowImageWithIndex:(NSUInteger)index
 {
 	if (index == self.sourceImageViewIndex) {
 		UIImageView *imageView = [self imageViewAtIndex:index];
 		imageView.image = self.sourceImageView.image;
 	}
-
-	[super didShowPageWithIndex:index];
+	
+	[super didShowImageWithIndex:index];
 }
 
 
-- (void)didHidePageWithIndex:(NSUInteger)index
+- (void)didHideImageWithIndex:(NSUInteger)index
 {
 	UIImageView *imageView = [self imageViewAtIndex:index];
 	if (imageView.image && imageView.image != self.sourceImageView.image) {
-		[super didHidePageWithIndex:index];
+		[super didHideImageWithIndex:index];
 	}
 
 	//reset zoom

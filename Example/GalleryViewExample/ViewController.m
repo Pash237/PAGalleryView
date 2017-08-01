@@ -37,6 +37,8 @@
     
 	self.galleryView.imageURLs = images;
 	self.galleryView.fullScreenImageURLs = fullScreenImages;
+	self.galleryView.closeAlignment = YES;
+	self.galleryView.imageSpacing = 5;
 	self.galleryView.errorImage = [UIImage imageNamed:@"error_image.png"];
 }
 
