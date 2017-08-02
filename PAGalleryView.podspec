@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "PAGalleryView"
-  s.version          = "0.2.1"
+  s.version          = "0.2.3"
   s.summary          = "iOS library implementing fullscreen and in-place image gallery similar to Facebook and VK applications."
   s.description      = <<-DESC
 						- Smooth animations
