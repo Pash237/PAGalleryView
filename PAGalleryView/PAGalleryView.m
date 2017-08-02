@@ -76,7 +76,7 @@
 			UIImageView *imageView = self.imageViews[i];
             if (self.closeAlignment) {
                 CGSize imageSize = [self.imagesSize[i] CGSizeValue];
-                CGFloat imageWidth = height * imageSize.width/imageSize.height;
+                CGFloat imageWidth = imageSize.height == 0 ? 0 : height * imageSize.width/imageSize.height;
                 imageView.frame = CGRectMake(currentX, 0, imageWidth, height);
 	            if (i != self.imageViews.count - 1) {
 		            currentX += self.imageSpacing;
